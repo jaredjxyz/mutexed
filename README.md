@@ -94,3 +94,5 @@ Cool features to add would be:
 - Think about if it would be useful to allow different mutex types
 - Add the ability to check if the resource is currently loaned out, instead of just trying to use is (the equivalent of try_lock)
 - Add more programming languages
+- Multi-level borrowing: Give neighbors the ability to loan out the powertool they loaned.
+  
