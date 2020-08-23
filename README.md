@@ -1,7 +1,7 @@
 ## Example
 
 ```
-#include "borrowing.h"
+#include "borrowing/borrowing.h"
 
 using namespace borrowing;
 
