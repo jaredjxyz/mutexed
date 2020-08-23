@@ -84,6 +84,10 @@ class ThreadSafeResources {
 }
 ```
 
+## Caveats
+- If the Borrowable object is destroyed before the Borrowed object, that causes undefined behavior. The Borrowable object needs to always be alive in order for the Borrowed object to use the resource.
+- In the current implementation, the resource is stored on the heap with a dynamic allocation. If that isn't okay for your program, you may want to change that behavior.
+
 ## It's got buzzwords!
 - RAII: access to the critical section is revoked when the Borrowed goes out of scope, which is also when the mutex is unlocked.
 - Smart pointers: The Borrowed object is a pointer-like object: use -> to access the members of the critical section and use * to dereference it to get the critical section!
