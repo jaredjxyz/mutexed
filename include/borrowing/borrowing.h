@@ -43,14 +43,4 @@ class Borrowable {
   }
 };
 
-struct X {
-  int i;
-  X(int i) : i(i) {}
-  X(const X& other) = default;
-  X& operator=(const X& other) {
-    i = other.i;
-    return *this;
-  }
-};
-
 }  // namespace borrowing
