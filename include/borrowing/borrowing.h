@@ -1,8 +1,6 @@
 #include <memory>
-#include <condition_variable>
-#include <memory>
-#include <thread>
-#include <iostream>
+#include <mutex>
+#include <utility>
 
 namespace borrowing {
 
