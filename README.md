@@ -34,14 +34,21 @@ Borrowing hides access to any content that needs to be secured by a mutex (the c
 ## Borrowed ownership is a simple, intuitive, and useful concept
 Taking a page from the ownership model introduced with C++11 and smart pointers (Single-ownership for unique_ptr and shared ownership for shared_ptr), I introduce here the idea of borrowed ownership.
 
-The idea of borrowed ownership is pretty simple. Imagine I live in a neighborhood with neighbors that often want to borrow my powertools. We will call that a `Borrowable<PowerTool> my_powertool(PowerTool(...))`.
+The idea of borrowed ownership is pretty simple. Imagine I live in a neighborhood with neighbors that often want to borrow my powertools.
+```
+Borrowable<PowerTool> my_powertool(PowerTool(...));
+```
 
 I am always the owner of that powertool, but I may not have posession of it at any one time. In addition, I may have multiple friends that want to use it at the same time.
 
-If one of my friends, let's call him thread1, wants to use my powertool, they will have to borrow it. That friend calls
-`Borrowed<PowerTool> powertool = my_powertool.borrow();`
+If one of my friends, let's call him thread1, wants to use my powertool, they will have to borrow it.
+```
+// Thread1
+Borrowed<PowerTool> powertool = my_powertool.borrow();
+// Access the powertool by dereferenceing with * or ->
+```
 
-This grants thread1 exclusive access to the PowerTool for as long as he needs it. When `powertool` goes out of scope and its destructor is called, thread 1 releases its use of PowerTool automatically.
+This grants thread1 exclusive access to the PowerTool for as long as it needs it. When `powertool` goes out of scope and its destructor is called, thread 1 releases its use of PowerTool automatically, and the next thread waiting for the PowerTool borrows it.
 
 Let's say I have another friend, thread2, that also wants to borrow `my_powertool`, but thread1 is currently using it and modifying it. Thread2 calls `Borrowed<PowerTool> thread2_powertool = my_powertool.borrow()`. But since thread1 currently has access, thread2 will wait at this point until thread1 is finished with PowerTool.
 
