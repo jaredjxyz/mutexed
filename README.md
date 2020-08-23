@@ -20,7 +20,13 @@ This has two major issues:
 1. Often developers don't bother commenting to show what objects are protected by mutexes and which are not, so it's difficult to know what exactly the critical section is.
 2. It's very easy for someone using this code to not realize they need to lock the mutex if they didn't read the comment, or to otherwise accidentally use the critical section without making sure they have exclusive access.
 
-There are tools to help avoid this. For example, [Clang Thread Safety Analysis](https://clang.llvm.org/docs/ThreadSafetyAnalysis.html), but for code where that's not an option, I wrote this tool.
+## What exists to solve this issue?
+
+[Clang Thread Safety Analysis](https://clang.llvm.org/docs/ThreadSafetyAnalysis.html) solves this pretty well I think.
+And there are various ways to use information hiding and abstraction on a case-by-case basis.
+I have not found a wrapper that does information hiding well on a general basis, and I think this solution handles this well.
+
+If anyone finds another project that does the same thing or similar, please point me to it! My afternoon of Googling came up with nothing, which is why I wrote this myself.
 
 ## TLDR:
 Borrowing hides access to any content that needs to be secured by a mutex (the critical section), and only gives access to that content after it has secured the mutex, and then unlocks the mutex when that content goes out of scope. And it does so with very little overhead.
@@ -95,4 +101,3 @@ Cool features to add would be:
 - Add the ability to check if the resource is currently loaned out, instead of just trying to use is (the equivalent of try_lock)
 - Add more programming languages
 - Multi-level borrowing: Give neighbors the ability to loan out the powertool they loaned.
-  
