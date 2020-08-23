@@ -55,11 +55,11 @@ class ThreadSafeResources {
 std::mutex mutex_;
 CriticalResources resources_;  // protected by mutex_
 
-void set_i(int i, const std::string& s) {
-  std::lock_guard<std::mutex> lock(mutex_);
-  resources_.i = i;
-  resources_.printer.print(s);
-}
+  void set_i(int i, const std::string& s) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    resources_.i = i;
+    resources_.printer.print(s);
+  }
 ...
 }
 ```
@@ -74,6 +74,7 @@ class ThreadSafeResources {
     resources->i = i;
     resources->printer.print(s);
   }
+  ...
 }
 ```
 
