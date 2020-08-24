@@ -47,7 +47,7 @@ Borrowing hides access to any content that needs to be secured by a mutex (the c
 
 ## What's wrong with the "Old way"?
 
-Having your lock next to the variables it protects has two issues, and relying on remembering to lock the mutex at the right time, has two issues:
+Having your lock next to the variables it protects and relying on remembering to lock the mutex at the right time, has two issues:
 1. Often developers don't bother commenting to show what objects are protected by mutexes and which are not, so it's difficult to know what exactly the critical section is.
 2. It's very easy for someone using this code to not realize they need to lock the mutex if they didn't read the comment, or to otherwise accidentally use the critical section without making sure they have exclusive access.
 
