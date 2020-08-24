@@ -1,3 +1,8 @@
+/**
+ * Copyright Jared Jensen, 2020 and all "borrowing" contributors
+ * https://github.com/jaredjxyz/borrowing
+ **/
+
 #include <memory>
 #include <mutex>
 #include <utility>
