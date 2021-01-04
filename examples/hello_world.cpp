@@ -38,5 +38,7 @@ int main() {
   t2.join();
   t1.join();
 
+  // str_owner.try_borrow(); // Works in C++17 and higher
+
   return 0;
 }

@@ -8,6 +8,10 @@
 #include <utility>
 #include <type_traits>
 
+#if __cplusplus >= 201703L
+#include <optional>
+#endif // __cplusplus >= 201703L
+
 namespace borrowing {
 
 template<class T>
@@ -61,6 +65,31 @@ class Borrowable {
   std::mutex& get_mutex() const {
     return mutex_;
   }
+
+  /// Enable try_... if we have optional
+#if __cplusplus >= 201703L
+  std::optional<Borrowed<T>> try_borrow() {
+    std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock);
+    if (lock) {
+      return Borrowed<T>(obj_, std::move(lock));
+    } else {
+      return {};
+    }
+  }
+
+  std::optional<Borrowed<const T>> try_borrow() const {
+    std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock);
+    if (lock) {
+      return Borrowed<const T>(obj_, std::move(lock));
+    } else {
+      return {};
+    }
+  }
+
+  std::optional<Borrowed<const T>> try_cborrow() const {
+    return try_borrow();
+  }
+#endif  // __cplusplus >= 201703L
 };
 
 }  // namespace borrowing
