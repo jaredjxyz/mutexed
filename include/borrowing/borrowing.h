@@ -6,6 +6,7 @@
 #include <memory>
 #include <mutex>
 #include <utility>
+#include <type_traits>
 
 namespace borrowing {
 
@@ -16,6 +17,7 @@ template <class T>
 class Borrowed {
 
   friend class Borrowable<T>;
+  friend class Borrowable<std::remove_const_t<T>>;
 
   T& obj_;
   std::unique_lock<std::mutex> lock_;
@@ -33,7 +35,7 @@ class Borrowed {
 template <class T>
 class Borrowable {
   T obj_;
-  std::mutex mutex_;
+  mutable std::mutex mutex_;
 
  public:
   template<class... Args>
@@ -41,18 +43,23 @@ class Borrowable {
 
   Borrowed<T> borrow() {
     std::unique_lock<std::mutex> lock(mutex_);
-    return Borrowed<T>(obj_.get(), std::move(lock));
+    return Borrowed<T>(obj_, std::move(lock));
   }
 
   Borrowed<const T> borrow() const {
     std::unique_lock<std::mutex> lock(mutex_);
-    return Borrowed<const T>(obj_.get(), std::move(lock));
+    return Borrowed<const T>(obj_, std::move(lock));
   }
 
   /// Returns the const version
   /// Useful for borrowing in a const fashion from a non-const Borrowable
   Borrowed<const T> cborrow() const {
     return borrow();
+  }
+
+  /// Useful for condition variables and the like
+  std::mutex& get_mutex() const {
+    return mutex_;
   }
 };
 
