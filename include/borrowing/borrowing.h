@@ -44,6 +44,11 @@ class Borrowable {
     std::unique_lock<std::mutex> lock(mutex_);
     return Borrowed<T>(obj_.get(), std::move(lock));
   }
+
+  Borrowed<const T> borrow() const {
+    std::unique_lock<std::mutex> lock(mutex_);
+    return Borrowed<const T>(obj_.get(), std::move(lock));
+  }
 };
 
 }  // namespace borrowing
