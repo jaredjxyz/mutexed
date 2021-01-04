@@ -17,28 +17,27 @@ class Borrowed {
 
   friend class Borrowable<T>;
 
-  T* obj_ptr_;
+  T& obj_;
   std::unique_lock<std::mutex> lock_;
 
-  Borrowed(T* obj_ptr, std::unique_lock<std::mutex>&& lock)
-      : obj_ptr_(obj_ptr), lock_(std::move(lock)) {}
+  Borrowed(T& obj, std::unique_lock<std::mutex>&& lock)
+      : obj_(obj), lock_(std::move(lock)) {}
 
 
  public:
-  T* operator->() const { return obj_ptr_; }
-  T& operator*() const { return *obj_ptr_; }
+  T* operator->() const { return &obj_; }
+  T& operator*() const { return obj_; }
 };
 
 
 template <class T>
 class Borrowable {
-  std::unique_ptr<T> obj_;
+  T obj_;
   std::mutex mutex_;
 
  public:
-  Borrowable(std::unique_ptr<T>&& obj) : obj_(std::move(obj)) {}
-  Borrowable(const T& obj) : obj_(std::make_unique<T>(obj)) {};
-  Borrowable(T&& obj) : obj_(std::make_unique<T>(std::move(obj))) {}
+  template<class... Args>
+  Borrowable(Args&&... args) : obj_(std::forward<Args>(args)...) {}
 
   Borrowed<T> borrow() {
     std::unique_lock<std::mutex> lock(mutex_);
