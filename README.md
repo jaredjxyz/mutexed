@@ -101,11 +101,8 @@ It's just that simple!
 I have no intention of building this into a fully-featured suite. It has basic functionality and that's it. I'm open to pull requests if anyone wants to improve it!
 
 Cool features to add would be:
-- Allow the ability to use stack memory instead of always allocating on the heap using a unique_ptr internally(maybe using an std::variant<unique_ptr<T>, T> or template overloads of some kind?)
 - Do performance analysis to see if this could be sped up or to see how big the slowdown is, if there is one at all.
-- Allow the ability to take the critical section object out of the Borrowable object
-- Allow the ability to change the thing being borrowed (for example, to an updated object)
 - Think about if it would be useful to allow different mutex types
-- Add the ability to check if the resource is currently loaned out, instead of just trying to use is (the equivalent of try_lock)
+- Add the ability to check if the resource is currently loaned out, instead of just trying to use it (the equivalent of try_lock)
 - Add more programming languages
 - Multi-level borrowing: Give neighbors the ability to loan out the powertool they loaned.
