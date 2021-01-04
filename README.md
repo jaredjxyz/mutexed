@@ -93,7 +93,7 @@ It's just that simple!
 
 ## Usage
 
-`cd` into the root folder of this repo. You can build a test script with `gcc -I include/ -std=c++14 test/driver.cpp`
+`cd` into the root folder of this repo. You can build a test script with `gcc -I include/ -std=c++14 examples/hello_world.cpp` (add `-lc++` on mac)
 
 
 ## Status
