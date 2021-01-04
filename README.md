@@ -91,6 +91,11 @@ It's just that simple!
 - Smart pointers: The Borrowed object is a pointer-like object: use -> to access the members of the critical section and use * to dereference it to get the critical section!
 - Synchronization: Access to the Borrowable object is thread-safe!
 
+## Usage
+
+`cd` into the root folder of this repo. You can build a test script with `gcc -I include/ -std=c++14 test/driver.cpp`
+
+
 ## Status
 
 I have no intention of building this into a fully-featured suite. It has basic functionality and that's it. I'm open to pull requests if anyone wants to improve it!
