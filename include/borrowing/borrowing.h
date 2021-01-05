@@ -38,8 +38,9 @@ class Borrowed {
 
 template <class T>
 class Borrowable {
-  T obj_;
+
   mutable std::mutex mutex_;
+  T obj_;
 
  public:
   template<class... Args>
@@ -47,6 +48,8 @@ class Borrowable {
 
   // Let's just make these explicit
   // Maybe one day make it copyable and movable
+  // Avoiding deadlock when locking both mutexes while only in the initializer list
+  // is slightly tricky but could be a fun problem to solve
   Borrowable(const Borrowable&) = delete;
   Borrowable(Borrowable&&) = delete;
   Borrowable& operator=(const Borrowable&) = delete;
