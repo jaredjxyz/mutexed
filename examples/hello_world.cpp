@@ -13,23 +13,12 @@ int main() {
 
   Borrowable<std::string> str_owner("Hi");
 
-  auto make_himom = [&](){
+  auto change_string = [&](const std::string& s){
     auto init_time = std::chrono::steady_clock::now();
 
     while (std::chrono::steady_clock::now() - init_time < std::chrono::seconds(1)) {
       Borrowed<std::string> str = str_owner.borrow();
-      *str = "Hi mom!";
-    }
-
-    str_owner.borrow()->clear();
-  };
-
-  auto make_helloworld = [&](){
-    auto init_time = std::chrono::steady_clock::now();
-
-    while (std::chrono::steady_clock::now() - init_time < std::chrono::seconds(1)) {
-      Borrowed<std::string> str = str_owner.borrow();
-      *str = "Hello World!";
+      *str = s;
     }
 
     str_owner.borrow()->clear();
@@ -44,8 +33,8 @@ int main() {
   // Should print "Hi", "Hello World", or "Hi mom", but not a jumbled mess
   // of characters that would happen in a non thread-safe environment
   std::thread t3(print_string);
-  std::thread t2(make_helloworld);
-  std::thread t1(make_himom);
+  std::thread t2(change_string, "Hello World!");
+  std::thread t1(change_string, "Hi mom!");
 
   t3.join();
   t2.join();
