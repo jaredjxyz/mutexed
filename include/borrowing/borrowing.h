@@ -45,6 +45,14 @@ class Borrowable {
   template<class... Args>
   Borrowable(Args&&... args) : obj_(std::forward<Args>(args)...) {}
 
+  // Let's just make these explicit
+  // Maybe one day make it copyable and movable
+  Borrowable(const Borrowable&) = delete;
+  Borrowable(Borrowable&&) = delete;
+  Borrowable& operator=(const Borrowable&) = delete;
+  Borrowable& operator=(Borrowable&&) = delete;
+  ~Borrowable() = default;
+
   Borrowed<T> borrow() {
     std::unique_lock<std::mutex> lock(mutex_);
     return Borrowed<T>(obj_, std::move(lock));
