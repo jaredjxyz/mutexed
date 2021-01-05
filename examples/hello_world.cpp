@@ -1,5 +1,6 @@
 #include "borrowing/borrowing.h"
 
+#include <chrono>
 #include <iostream>
 #include <thread>
 
@@ -12,27 +13,39 @@ int main() {
 
   Borrowable<std::string> str_owner("Hi");
 
-  auto resize_string = [&](){
-    Borrowed<std::string> str = str_owner.borrow();
-    str->resize(goal.size());
-    // Ownership is given back here, as it goes out of scope
+  auto make_himom = [&](){
+    auto init_time = std::chrono::steady_clock::now();
+
+    while (std::chrono::steady_clock::now() - init_time < std::chrono::seconds(1)) {
+      Borrowed<std::string> str = str_owner.borrow();
+      *str = "Hi mom!";
+    }
+
+    str_owner.borrow()->clear();
   };
 
   auto make_helloworld = [&](){
-    // Busy wait to find if string has been resized
-    while (!(str_owner.borrow()->size() == goal.size())) {}
-    *str_owner.borrow() = goal;
+    auto init_time = std::chrono::steady_clock::now();
+
+    while (std::chrono::steady_clock::now() - init_time < std::chrono::seconds(1)) {
+      Borrowed<std::string> str = str_owner.borrow();
+      *str = "Hello World!";
+    }
+
+    str_owner.borrow()->clear();
   };
 
   auto print_string = [&](){
     do {
       std::cout << *str_owner.cborrow() << std::endl;
-    } while (*str_owner.borrow() != goal);
+    } while (!str_owner.cborrow()->empty());
   };
 
+  // Should print "Hi", "Hello World", or "Hi mom", but not a jumbled mess
+  // of characters that would happen in a non thread-safe environment
   std::thread t3(print_string);
   std::thread t2(make_helloworld);
-  std::thread t1(resize_string);
+  std::thread t1(make_himom);
 
   t3.join();
   t2.join();
