@@ -80,7 +80,7 @@ class Borrowable {
   /// Enable try_... if we have optional
 #if __cplusplus >= 201703L
   std::optional<Borrowed<T>> try_borrow() {
-    if (auto lock = std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock)) {
+    if (auto lock = std::unique_lock<std::mutex>(mutex_, std::try_to_lock)) {
       return Borrowed<T>(obj_, std::move(lock));
     } else {
       return {};
@@ -88,7 +88,7 @@ class Borrowable {
   }
 
   std::optional<Borrowed<const T>> try_borrow() const {
-    if (auto lock = std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock)) {
+    if (auto lock = std::unique_lock<std::mutex>(mutex_, std::try_to_lock)) {
       return Borrowed<const T>(obj_, std::move(lock));
     } else {
       return {};
