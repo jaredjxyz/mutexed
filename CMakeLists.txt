@@ -1,0 +1,16 @@
+cmake_minimum_required(VERSION 3.16)
+project(borrowing)
+
+option(BUILD_EXAMPLES "Build examples" OFF)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_library(borrowing INTERFACE)
+target_include_directories(borrowing INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+$<INSTALL_INTERFACE:include>)
+
+if (BUILD_EXAMPLES)
+  add_executable(hello_world examples/hello_world.cpp)
+  target_link_libraries(hello_world borrowing)
+endif()
