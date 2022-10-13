@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(borrowing)
 
+set(PACKAGE_VERSION 0.0.1)
+
 option(BUILD_EXAMPLES "Build examples" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -14,3 +16,24 @@ if (BUILD_EXAMPLES)
   add_executable(hello_world examples/hello_world.cpp)
   target_link_libraries(hello_world borrowing)
 endif()
+
+
+install(TARGETS borrowing
+        EXPORT borrowingTargets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+        )
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    borrowingConfigVersion.cmake
+    VERSION ${PACKAGE_VERSION}
+    COMPATIBILITY AnyNewerVersion
+    )
+install(EXPORT borrowingTargets
+        FILE borrowingConfig.cmake
+        NAMESPACE borrowing::
+        DESTINATION lib/cmake/borrowing
+         )
+export(TARGETS borrowing NAMESPACE borrowing:: FILE borrowingTargets.cmake)
