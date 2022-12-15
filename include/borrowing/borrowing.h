@@ -77,8 +77,6 @@ class Borrowable {
     return mutex_;
   }
 
-  /// Enable try_... if we have optional
-#if __cplusplus >= 201703L
   std::optional<Borrowed<T>> try_borrow() {
     if (auto lock = std::unique_lock<std::mutex>(mutex_, std::try_to_lock)) {
       return Borrowed<T>(obj_, std::move(lock));
@@ -86,21 +84,6 @@ class Borrowable {
       return {};
     }
   }
-
-  std::optional<Borrowed<const T>> try_borrow() const {
-    if (auto lock = std::unique_lock<std::mutex>(mutex_, std::try_to_lock)) {
-      return Borrowed<const T>(obj_, std::move(lock));
-    } else {
-      return {};
-    }
-  }
-
-  /// Returns the const version.
-  /// Useful for borrowing in a const fashion from a non-const Borrowable
-  std::optional<Borrowed<const T>> try_cborrow() const {
-    return try_borrow();
-  }
-#endif  // __cplusplus >= 201703L
 };
 
 }  // namespace borrowing
