@@ -1,9 +1,11 @@
-name: GitHub Actions Demo
+name: CI
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on: [push, workflow_dispatch]
 jobs:
-Explore-GitHub-Actions:
-    - name: get-cmake
-      uses: lukka/get-cmake@arm64-win-linux
-      steps:
-        - run: "mkdir build && cd build && cmake .."
+  Explore-GitHub-Actions:
+    name: get-cmake
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: lukka/get-cmake@arm64-win-linux
+      - run: "mkdir build && cd build && cmake .."
