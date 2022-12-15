@@ -1,0 +1,9 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+Explore-GitHub-Actions:
+    - name: get-cmake
+      uses: lukka/get-cmake@arm64-win-linux
+      steps:
+        - run: "mkdir build && cd build && cmake .."
