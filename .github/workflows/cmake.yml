@@ -8,5 +8,4 @@ jobs:
 
     steps:
       - uses: lukka/get-cmake@arm64-win-linux
-      - run: "mkdir build && cd build"
-      - run: "cmake .."
+      - run: "cmake ."
