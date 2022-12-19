@@ -9,5 +9,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: lukka/get-cmake@arm64-win-linux
+      - run: "sudo apt-get update && sudo apt-get install libgtest-dev"
       - run: "mkdir build && cd build && cmake .. && sudo make install"
       - run: "cd test && ctest"
