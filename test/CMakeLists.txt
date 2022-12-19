@@ -8,4 +8,6 @@ find_package(GTest REQUIRED)
 add_executable(borrowing_test test_borrowing.cpp)
 target_link_libraries(borrowing_test GTest::Main borrowing::borrowing)
 
+enable_testing()
+
 gtest_discover_tests(borrowing_test)
