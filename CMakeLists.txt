@@ -4,6 +4,7 @@ project(borrowing)
 set(PACKAGE_VERSION 0.0.1)
 
 option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_TESTS "Build tests" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
