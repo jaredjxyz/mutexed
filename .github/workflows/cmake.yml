@@ -7,5 +7,6 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - uses: actions/checkout@v2
       - uses: lukka/get-cmake@arm64-win-linux
       - run: "cmake ."
