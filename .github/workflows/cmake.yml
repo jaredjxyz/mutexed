@@ -9,5 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: lukka/get-cmake@arm64-win-linux
-      - run: "make build && cd build && cmake .. && sudo make install"
+      - run: "mkdir build && cd build && cmake .. && sudo make install"
       - run: "cd test && ctest"
