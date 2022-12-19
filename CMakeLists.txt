@@ -4,7 +4,6 @@ project(borrowing)
 set(PACKAGE_VERSION 0.0.1)
 
 option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_TESTS "Build TESTS" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -43,5 +42,11 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
     target_link_libraries(hello_world borrowing)
   endif()
   if ("${BUILD_TESTS}")
-  add_subdirectory(test)
+    find_package(GTest REQUIRED)
+
+    add_executable(borrowing_test test_borrowing.cpp)
+    target_link_libraries(borrowing_test GTest::Main borrowing::borrowing)
+    enable_testing()
+
+    gtest_discover_tests(borrowing_test)
 endif()
