@@ -7,10 +7,7 @@
 #include <mutex>
 #include <utility>
 #include <type_traits>
-
-#if __cplusplus >= 201703L
 #include <optional>
-#endif // __cplusplus >= 201703L
 
 namespace borrowing {
 

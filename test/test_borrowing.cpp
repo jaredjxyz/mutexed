@@ -7,7 +7,7 @@ TEST(BorrowingTest, test_borrowing_twice) {
     borrowing::Borrowed<int> borrowed = resource.borrow();
     EXPECT_EQ(*borrowed, 4);
     // Trying to borrow from the same thread is undefined = launch it in another thread
-    std::thread([&resource](){std::optional<borrowing::Borrowable<int>> i = resource.try_borrow(); EXPECT_EQ(i, std::nullopt);}).join();
+    std::thread([&resource](){std::optional<borrowing::Borrowed<int>> i = resource.try_borrow(); EXPECT_EQ(i, std::nullopt);}).join();
 }
 
 TEST(BorrowingTest, raii_returning) {

@@ -3,14 +3,14 @@ project(borrowing)
 
 set(PACKAGE_VERSION 0.0.1)
 
-option(BUILD_EXAMPLES "Build examples" OFF)
-option(BUILD_TESTS "Build TESTS" OFF)
+option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_TESTS "Build TESTS" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# if ("${BUILD_TESTS}")
-#   add_subdirectory(test)
-# endif()
+if ("${BUILD_TESTS}")
+  add_subdirectory(test)
+endif()
 
 add_library(borrowing INTERFACE)
 target_include_directories(borrowing INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
