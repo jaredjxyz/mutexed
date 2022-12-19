@@ -8,18 +8,12 @@ option(BUILD_TESTS "Build TESTS" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-if ("${BUILD_TESTS}")
-  add_subdirectory(test)
-endif()
+
 
 add_library(borrowing INTERFACE)
 target_include_directories(borrowing INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 $<INSTALL_INTERFACE:include>)
 
-if (BUILD_EXAMPLES)
-  add_executable(hello_world examples/hello_world.cpp)
-  target_link_libraries(hello_world borrowing)
-endif()
 
 
 install(TARGETS borrowing
@@ -43,3 +37,11 @@ install(EXPORT borrowingTargets
 export(TARGETS borrowing NAMESPACE borrowing:: FILE borrowingTargets.cmake)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
     DESTINATION include)
+
+  if (BUILD_EXAMPLES)
+    add_executable(hello_world examples/hello_world.cpp)
+    target_link_libraries(hello_world borrowing)
+  endif()
+  if ("${BUILD_TESTS}")
+  add_subdirectory(test)
+endif()
