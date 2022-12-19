@@ -1,0 +1,13 @@
+name: CI
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push, workflow_dispatch]
+jobs:
+  Explore-GitHub-Actions:
+    name: get-cmake
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: lukka/get-cmake@arm64-win-linux
+      - run: "sudo apt-get update && sudo apt-get install libgtest-dev"
+      - run: "mkdir build && cd build && cmake .. && make && sudo make install && ctest"
