@@ -17,7 +17,7 @@ class Mutexed;
 template <class T>
 class Owned {
 
-  template<class T2, class Mutex, typename = std::enable_if<std::is_same<T, std::remove_const_t<T2>>>
+  template<class T2, class Mutex, typename = std::enable_if<std::is_same<T, std::remove_const_t<T2>>>>
   friend class Mutexed<T2, Mutex>;
 
   T& obj_;
