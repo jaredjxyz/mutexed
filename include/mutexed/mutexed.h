@@ -17,8 +17,8 @@ class Mutexed;
 template <class T>
 class Owned {
 
-  friend class Mutexed<T>;
-  friend class Mutexed<std::remove_const_t<T>>;
+  template<class T, class Mutex>
+  friend class Mutexed<T, Mutex>;
 
   T& obj_;
   std::unique_lock<std::mutex> lock_;
