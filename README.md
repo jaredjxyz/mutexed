@@ -1,4 +1,4 @@
-# Borrowing.h: a tiny C++ tool to make writing thread-safe code easier
+# Mutexed: a tiny C++ tool to make writing thread-safe code easier
 
 Making multithreaded code safe is hard.
 
@@ -28,14 +28,14 @@ CriticalResources resources_;  // protected by mutex_
 ...
 }
 ```
-Using borrowing:
+Using Mutexed:
 ```
 class ThreadSafeResources {
   ...
-  Borrowable<CriticalResources> resources_;
+  Mutexed<CriticalResources> resources_;
 
   void set_i(int i, const std::string& s) {
-    Borrowed<CriticalResources> resources = resources_.borrow();
+    Locked<CriticalResources> resources = resources_.lock();
     resources->i = i;
     resources->printer.print(s);
   }
@@ -43,7 +43,7 @@ class ThreadSafeResources {
 }
 ```
 
-Borrowing hides access to any content that needs to be secured by a mutex (the critical section), and only gives access to that content after it has secured the mutex, and then unlocks the mutex when that content goes out of scope. And it does so with very little overhead.
+Mutexed hides access to any content that needs to be secured by a mutex (the critical section), and only gives access to that content after it has secured the mutex, and then unlocks the mutex when that content goes out of scope. And it does so with very little overhead.
 
 ## What's wrong with the "Old way"?
 
@@ -64,7 +64,7 @@ Taking a page from the ownership model introduced with C++11 and smart pointers 
 
 The idea of borrowed ownership is pretty simple. Imagine I live in a neighborhood with neighbors that often want to borrow my powertools.
 ```
-Borrowable<PowerTool> my_powertool(PowerTool(...));
+Mutexed<PowerTool> my_powertool(PowerTool(...));
 ```
 
 I am always the owner of that powertool, but I may not have posession of it at any one time. In addition, I may have multiple friends that want to use it at the same time.
@@ -72,24 +72,24 @@ I am always the owner of that powertool, but I may not have posession of it at a
 If one of my friends, let's call him thread1, wants to use my powertool, they will have to borrow it.
 ```
 // Thread1
-Borrowed<PowerTool> powertool = my_powertool.borrow();
+Locked<PowerTool> powertool = my_powertool.lock();
 // Access the powertool by dereferenceing with * or ->
 ```
 
 This grants thread1 exclusive access to the PowerTool for as long as it needs it. When `powertool` goes out of scope and its destructor is called, thread 1 releases its use of PowerTool automatically, and the next thread waiting for the PowerTool borrows it.
 
-Let's say I have another friend, thread2, that also wants to borrow `my_powertool`, but thread1 is currently using it and modifying it. Thread2 calls `Borrowed<PowerTool> thread2_powertool = my_powertool.borrow()`. But since thread1 currently has access, thread2 will wait at this point until thread1 is finished with PowerTool.
+Let's say I have another friend, thread2, that also wants to borrow `my_powertool`, but thread1 is currently using it and modifying it. Thread2 calls `Locked<PowerTool> thread2_powertool = my_powertool.borrow()`. But since thread1 currently has access, thread2 will wait at this point until thread1 is finished with PowerTool.
 
 It's just that simple!
 
 ## Caveats
-- If the Borrowable object is destroyed before the Borrowed object, that causes undefined behavior. The Borrowable object needs to always be alive in order for the Borrowed object to use the resource.
+- If the Mutexed object is destroyed before the Locked object, that causes undefined behavior. The Mutexed object needs to always be alive in order for the Locked object to use the resource.
 - In the current implementation, the resource is stored on the heap with a dynamic allocation. If that isn't okay for your program, you may want to change that behavior.
 
 ## It's got buzzwords!
-- RAII: access to the critical section is revoked when the Borrowed goes out of scope, which is also when the mutex is unlocked.
-- Smart pointers: The Borrowed object is a pointer-like object: use -> to access the members of the critical section and use * to dereference it to get the critical section!
-- Synchronization: Access to the Borrowable object is thread-safe!
+- RAII: access to the critical section is revoked when the Locked goes out of scope, which is also when the mutex is unlocked.
+- Smart pointers: The Locked object is a pointer-like object: use -> to access the members of the critical section and use * to dereference it to get the critical section!
+- Synchronization: Access to the Mutexed object is thread-safe!
 
 ## Usage
 

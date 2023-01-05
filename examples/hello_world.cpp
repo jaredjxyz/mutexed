@@ -1,33 +1,33 @@
-#include "borrowing/borrowing.h"
+#include "mutexed/mutexed.h"
 
 #include <chrono>
 #include <iostream>
 #include <thread>
 
 int main() {
-  using borrowing::Borrowable;
-  using borrowing::Borrowed;
+  using mutexed::Mutexed;
+  using mutexed::Owned;
 
   // Turn the string into "Hello World"
   const std::string goal = "Hello world";
 
-  Borrowable<std::string> str_owner("Hi");
+  Mutexed<std::string> str_owner("Hi");
 
   auto change_string = [&](const std::string& s){
     auto init_time = std::chrono::steady_clock::now();
 
     while (std::chrono::steady_clock::now() - init_time < std::chrono::seconds(1)) {
-      Borrowed<std::string> str = str_owner.borrow();
+      Owned<std::string> str = str_owner.own();
       *str = s;
     }
 
-    str_owner.borrow()->clear();
+    str_owner.own()->clear();
   };
 
   auto print_string = [&](){
     do {
-      std::cout << *str_owner.cborrow() << std::endl;
-    } while (!str_owner.cborrow()->empty());
+      std::cout << *str_owner.cown() << std::endl;
+    } while (!str_owner.cown()->empty());
   };
 
   // Should print "Hi", "Hello World", or "Hi mom", but not a jumbled mess
