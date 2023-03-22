@@ -78,7 +78,7 @@ Locked<PowerTool> powertool = my_powertool.lock();
 
 This grants thread1 exclusive access to the PowerTool for as long as it needs it. When `powertool` goes out of scope and its destructor is called, thread 1 releases its use of PowerTool automatically, and the next thread waiting for the PowerTool borrows it.
 
-Let's say I have another friend, thread2, that also wants to borrow `my_powertool`, but thread1 is currently using it and modifying it. Thread2 calls `Locked<PowerTool> thread2_powertool = my_powertool.borrow()`. But since thread1 currently has access, thread2 will wait at this point until thread1 is finished with PowerTool.
+Let's say I have another friend, thread2, that also wants to borrow `my_powertool`, but thread1 is currently using it and modifying it. Thread2 calls `Locked<PowerTool> thread2_powertool = my_powertool.lock()`. But since thread1 currently has access, thread2 will wait at this point until thread1 is finished with PowerTool.
 
 It's just that simple!
 
