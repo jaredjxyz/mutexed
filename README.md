@@ -8,7 +8,7 @@ Making sure you don't actually change your safe multithreaded code to make it un
 
 Let's say we have a class CriticalResources that is not thread-safe but needs to be accessed by multiple threads in a thread-safe way.
 ```
-struct CrticalResources {
+struct CriticalResources {
   Printer printer;
   int i;
 }
@@ -67,13 +67,13 @@ The idea of borrowed ownership is pretty simple. Imagine I live in a neighborhoo
 Mutexed<PowerTool> my_powertool(PowerTool(...));
 ```
 
-I am always the owner of that powertool, but I may not have posession of it at any one time. In addition, I may have multiple friends that want to use it at the same time.
+I am always the owner of that powertool, but I may not have possession of it at any one time. In addition, I may have multiple friends that want to use it at the same time.
 
 If one of my friends, let's call him thread1, wants to use my powertool, they will have to borrow it.
 ```
 // Thread1
 Locked<PowerTool> powertool = my_powertool.lock();
-// Access the powertool by dereferenceing with * or ->
+// Access the powertool by dereferencing with * or ->
 ```
 
 This grants thread1 exclusive access to the PowerTool for as long as it needs it. When `powertool` goes out of scope and its destructor is called, thread 1 releases its use of PowerTool automatically, and the next thread waiting for the PowerTool borrows it.
