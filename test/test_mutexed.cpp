@@ -16,3 +16,10 @@ TEST(BorrowingTest, raii_returning) {
     {mutexed::Owned<int> Owned = i.own();}
     EXPECT_EQ(*i.own(), 4);
 }
+
+TEST(BorrowingTest, try_own_success) {
+    mutexed::Mutexed<int> resource(4);
+    std::optional<mutexed::Owned<int>> maybe_owned = resource.try_own();
+    ASSERT_TRUE(maybe_owned.has_value());
+    EXPECT_EQ(**maybe_owned, 4);
+}
