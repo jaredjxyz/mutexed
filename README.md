@@ -95,6 +95,14 @@ It's just that simple!
 
 `cd` into the root folder of this repo. You can build and install with `mkdir build && cd build && cmake .. && sudo make install`.
 
+## Running tests
+
+The CMake build optionally compiles a small test suite. CMake will search for
+an installed copy of Google Test. If it is not found, the build system uses
+`FetchContent` to automatically download Google Test. Systems without internet
+access should install `libgtest-dev` or provide `GTest_ROOT` so CMake can find
+the library. Tests can also be disabled entirely with `-DBUILD_TESTS=OFF`.
+
 
 ## Status
 
