@@ -35,7 +35,7 @@ class ThreadSafeResources {
   Mutexed<CriticalResources> resources_;
 
   void set_i(int i, const std::string& s) {
-    Locked<CriticalResources> resources = resources_.lock();
+    Owned<CriticalResources> resources = resources_.own();
     resources->i = i;
     resources->printer.print(s);
   }
@@ -72,23 +72,23 @@ I am always the owner of that powertool, but I may not have possession of it at 
 If one of my friends, let's call him thread1, wants to use my powertool, they will have to borrow it.
 ```
 // Thread1
-Locked<PowerTool> powertool = my_powertool.lock();
+Owned<PowerTool> powertool = my_powertool.own();
 // Access the powertool by dereferencing with * or ->
 ```
 
 This grants thread1 exclusive access to the PowerTool for as long as it needs it. When `powertool` goes out of scope and its destructor is called, thread 1 releases its use of PowerTool automatically, and the next thread waiting for the PowerTool borrows it.
 
-Let's say I have another friend, thread2, that also wants to borrow `my_powertool`, but thread1 is currently using it and modifying it. Thread2 calls `Locked<PowerTool> thread2_powertool = my_powertool.lock()`. But since thread1 currently has access, thread2 will wait at this point until thread1 is finished with PowerTool.
+Let's say I have another friend, thread2, that also wants to borrow `my_powertool`, but thread1 is currently using it and modifying it. Thread2 calls `Owned<PowerTool> thread2_powertool = my_powertool.own()`. But since thread1 currently has access, thread2 will wait at this point until thread1 is finished with PowerTool.
 
 It's just that simple!
 
 ## Caveats
-- If the Mutexed object is destroyed before the Locked object, that causes undefined behavior. The Mutexed object needs to always be alive in order for the Locked object to use the resource.
+- If the Mutexed object is destroyed before the Owned object, that causes undefined behavior. The Mutexed object needs to always be alive in order for the Owned object to use the resource.
 - In the current implementation, the resource is stored on the heap with a dynamic allocation. If that isn't okay for your program, you may want to change that behavior.
 
 ## It's got buzzwords!
-- RAII: access to the critical section is revoked when the Locked goes out of scope, which is also when the mutex is unlocked.
-- Smart pointers: The Locked object is a pointer-like object: use -> to access the members of the critical section and use * to dereference it to get the critical section!
+- RAII: access to the critical section is revoked when the Owned goes out of scope, which is also when the mutex is unlocked.
+- Smart pointers: The Owned object is a pointer-like object: use -> to access the members of the critical section and use * to dereference it to get the critical section!
 - Synchronization: Access to the Mutexed object is thread-safe!
 
 ## Usage
