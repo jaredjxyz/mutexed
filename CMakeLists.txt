@@ -43,11 +43,20 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
     target_link_libraries(hello_world mutexed)
   endif()
   if ("${BUILD_TESTS}")
-    find_package(GTest REQUIRED)
+    include(FetchContent)
+    find_package(GTest QUIET)
+    if(NOT GTest_FOUND)
+      message(STATUS "GTest not found. Fetching via FetchContent...")
+      FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+      )
+      FetchContent_MakeAvailable(googletest)
+    endif()
 
     add_executable(mutexed_test test/test_mutexed.cpp)
-    target_link_libraries(mutexed_test GTest::Main mutexed)
+    target_link_libraries(mutexed_test GTest::gtest_main mutexed)
     enable_testing()
 
     gtest_discover_tests(mutexed_test)
-endif()
+  endif()

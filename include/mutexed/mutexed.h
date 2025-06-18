@@ -14,16 +14,15 @@ namespace mutexed {
 template<class T, class Mutex>
 class Mutexed;
 
-template <class T>
+template <class T, class Mutex = std::mutex>
 class Owned {
 
-  template<class T2, class Mutex>
-  friend class Mutexed;
+  template<class, class> friend class Mutexed;
 
   T& obj_;
-  std::unique_lock<std::mutex> lock_;
+  std::unique_lock<Mutex> lock_;
 
-  Owned(T& obj, std::unique_lock<std::mutex>&& lock)
+  Owned(T& obj, std::unique_lock<Mutex>&& lock)
       : obj_(obj), lock_(std::move(lock)) {}
 
 
@@ -34,7 +33,7 @@ class Owned {
 
 
 template <class T, class Mutex = std::mutex>
-class Mutexed : public Mutex {
+class Mutexed {
 
   mutable Mutex mutex_;
   T obj_;
@@ -53,30 +52,30 @@ class Mutexed : public Mutex {
   Mutexed& operator=(Mutexed&&) = delete;
   ~Mutexed() = default;
 
-  Owned<T> own() {
-    std::unique_lock<std::mutex> lock(mutex_);
-    return Owned<T>(obj_, std::move(lock));
+  Owned<T, Mutex> own() {
+    std::unique_lock<Mutex> lock(mutex_);
+    return Owned<T, Mutex>(obj_, std::move(lock));
   }
 
-  Owned<const T> own() const {
-    std::unique_lock<std::mutex> lock(mutex_);
-    return Owned<const T>(obj_, std::move(lock));
+  Owned<const T, Mutex> own() const {
+    std::unique_lock<Mutex> lock(mutex_);
+    return Owned<const T, Mutex>(obj_, std::move(lock));
   }
 
   /// Returns the const version
   /// Useful for borrowing in a const fashion from a non-const Mutexed
-  Owned<const T> cown() const {
+  Owned<const T, Mutex> cown() const {
     return own();
   }
 
   /// Useful for condition variables and the like
-  std::mutex& get_mutex() const {
+  Mutex& get_mutex() const {
     return mutex_;
   }
 
-  std::optional<Owned<T>> try_own() {
-    if (auto lock = std::unique_lock<std::mutex>(mutex_, std::try_to_lock)) {
-      return Owned<T>(obj_, std::move(lock));
+  std::optional<Owned<T, Mutex>> try_own() {
+    if (auto lock = std::unique_lock<Mutex>(mutex_, std::try_to_lock)) {
+      return Owned<T, Mutex>(obj_, std::move(lock));
     } else {
       return {};
     }
